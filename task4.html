@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Advanced Music Player</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style4.css">
+</head>
+<body>
+  <div class="player">
+    <img src="https://via.placeholder.com/400x300?text=Album+Cover" class="cover" id="cover" alt="cover image">
+    <div class="song-info">
+      <div class="song-title" id="title">Title</div>
+      <div class="artist" id="artist">Artist</div>
+    </div>
+
+    <div class="progress-container" id="progress-container">
+      <div class="progress" id="progress"></div>
+    </div>
+
+    <div class="controls">
+      <button id="prev">⏮</button>
+      <button id="play">▶</button>
+      <button id="next">⏭</button>
+    </div>
+
+    <div class="volume">
+      Volume: <input type="range" id="volume" min="0" max="1" step="0.01" value="0.5">
+    </div>
+
+    <ul class="playlist" id="playlist"></ul>
+  </div>
+
+  <script src="script4.js"></script>
+</body>
+</html>

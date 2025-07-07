@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Modern Image Gallery</title>
+  <meta name="theme-color" content="#ffffff"/>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Modern Image Gallery</h1>
+      <p class="subtitle">Browse through our stunning collection of images</p>
+    </header>
+
+    <div class="filter-controls">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="nature">Nature</button>
+      <button class="filter-btn" data-filter="cars">Cars</button>
+      <button class="filter-btn" data-filter="animals">Animals</button>
+    </div>
+
+    <div class="gallery" id="gallery"></div>
+  </div>
+
+  <div class="lightbox" id="lightbox">
+    <div class="lightbox-content">
+      <button class="close-btn" id="closeBtn">&times;</button>
+      <button class="prev-btn" id="prevBtn">&#10094;</button>
+      <img src="" alt="" class="lightbox-img" id="lightboxImg">
+      <button class="next-btn" id="nextBtn">&#10095;</button>
+      <p class="lightbox-caption" id="lightboxCaption"></p>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-content">
+      <h5>Challenge Task by CodeAlpha</h5>
+      <h5>Developed by Pallavi Gude</h5>
+      <div class="footer-bottom">
+        <p>&copy; <span id="current-year"></span> Pallavi Gude - All Rights Reserved</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const galleryData = [];
+
+    for (let i = 1; i <= 10; i++) {
+      galleryData.push(
+        { src: `animal${i}.jpg`, alt: `Animal ${i}`, category: 'animals', title: `Animal ${i}` },
+        { src: `nature${i}.jpg`, alt: `Nature ${i}`, category: 'nature', title: `Nature ${i}` }
+      );
+      if (i <= 9) {
+        galleryData.push({ src: `car${i}.jpg`, alt: `Car ${i}`, category: 'cars', title: `Car ${i}` });
+      }
+    }
+
+    const gallery = document.getElementById('gallery');
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxCaption = document.getElementById('lightboxCaption');
+    const closeBtn = document.getElementById('closeBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    let currentImageIndex = 0;
+    let filteredImages = [...galleryData];
+
+    function renderGallery(images) {
+      gallery.innerHTML = '';
+      images.forEach((img, index) => {
+        const item = document.createElement('div');
+        item.className = 'gallery-item';
+        item.innerHTML = `
+          <img src="${img.src}" alt="${img.alt}" class="gallery-img">
+          <div class="gallery-caption">${img.title}</div>
+        `;
+        item.addEventListener('click', () => openLightbox(index));
+        gallery.appendChild(item);
+      });
+    }
+
+    function openLightbox(index) {
+      currentImageIndex = index;
+      const image = filteredImages[index];
+      lightboxImg.src = image.src;
+      lightboxImg.alt = image.alt;
+      lightboxCaption.textContent = image.title;
+      lightbox.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+
+    function prevImage() {
+      currentImageIndex = (currentImageIndex - 1 + filteredImages.length) % filteredImages.length;
+      updateLightbox();
+    }
+
+    function nextImage() {
+      currentImageIndex = (currentImageIndex + 1) % filteredImages.length;
+      updateLightbox();
+    }
+
+    function updateLightbox() {
+      const image = filteredImages[currentImageIndex];
+      lightboxImg.src = image.src;
+      lightboxImg.alt = image.alt;
+      lightboxCaption.textContent = image.title;
+    }
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', function () {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        const category = this.dataset.filter;
+        filteredImages = category === 'all'
+          ? [...galleryData]
+          : galleryData.filter(img => img.category === category);
+        renderGallery(filteredImages);
+      });
+    });
+
+    closeBtn.addEventListener('click', closeLightbox);
+    prevBtn.addEventListener('click', prevImage);
+    nextBtn.addEventListener('click', nextImage);
+
+    lightbox.addEventListener('click', e => {
+      if (e.target === lightbox) closeLightbox();
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (lightbox.classList.contains('active')) {
+        if (e.key === 'Escape') closeLightbox();
+        else if (e.key === 'ArrowLeft') prevImage();
+        else if (e.key === 'ArrowRight') nextImage();
+      }
+    });
+
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    renderGallery(filteredImages);
+  </script>
+</body>
+</html>
